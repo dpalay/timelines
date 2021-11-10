@@ -1,3 +1,29 @@
 .guessed {
-   background-color:  rgb(240, 243, 65);
+  background-color: rgb(240, 243, 65);
+}
+
+.incorrect {
+  color: darkred;
+}
+
+.correct {
+  color: forestgreen;
+}
+
+.event1 {
+cursor: pointer;
+margin-right: 20px;
+}
+
+.event2 {
+cursor: pointer;
+margin-left: 20px;
+}
+
+.comparisons {
+   display: flex;
+   align-content: center;
+   justify-content: center;
+   align-items: center;
+
 }

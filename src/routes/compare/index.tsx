@@ -11,14 +11,13 @@ interface Props {
 }
 
 const Compare: FunctionalComponent<Props> = (props) => {
+  const categories = useRecoilValue(CategoriesState);
+  const [score, setScore] = useRecoilState(ScoreState);
 
-    const categories = useRecoilValue(CategoriesState)
-    const [score, setScore] = useRecoilState(ScoreState)
+  const event1ref = useRef<HTMLDivElement>(null);
+  const event2ref = useRef<HTMLDivElement>(null);
+  const [dirty, setDirty] = useState(false);
 
-    const event1ref = useRef<HTMLDivElement>(null);
-    const event2ref = useRef<HTMLDivElement>(null);
-    const [dirty, setDirty] = useState(false);
- 
   const [event1, setEvent1] = useState<TimeEvent>({
     name: "",
     date: new Date(Date.now()),
@@ -31,60 +30,96 @@ const Compare: FunctionalComponent<Props> = (props) => {
   });
   const [correctAnswer, setCorrectAnswer] = useState<string>("");
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     setDirty(() => false);
-    console.log(props);
-    console.log(categories)
-    console.log()
-    const filteredList = data.filter(value =>  value.categories.filter(category => categories.includes(category)).length > 0);
-    console.log(filteredList);
-    if (filteredList.length > 0) {  
+    const filteredList = data.filter(
+      (value) =>
+        value.categories.filter((category) => categories.includes(category))
+          .length > 0
+    );
+    if (filteredList.length > 0) {
       const e1 =
         filteredList[Math.floor(Math.random() * filteredList.length) | 0];
       const e2 =
         filteredList[Math.floor(Math.random() * filteredList.length) | 0];
-      console.log(e1, e2,e1.date < e2.date ? e1.name : e2.name );
+      console.log(e1, e2, e1.date < e2.date ? e1.name : e2.name);
       setEvent1(e1);
       setEvent2(e2);
-        setCorrectAnswer(e1.date < e2.date ? e1.name : e2.name);
+      setCorrectAnswer(e1.date < e2.date ? e1.name : e2.name);
     }
   }, [props, dirty, categories]);
 
+  const makeGuess: h.JSX.EventHandler<
+    h.JSX.TargetedMouseEvent<HTMLDivElement>
+  > = (event): void => {
+    if (submitted) return;
 
-  const makeGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLDivElement>> = (event): void => {
     event1ref.current?.classList.remove(style.guessed);
     event2ref.current?.classList.remove(style.guessed);
     const target = event.target as HTMLDivElement;
-    target.classList.add(style.guessed)
-    setSelectedAnswer(target.innerHTML);
-}
+    target.classList.add(style.guessed);
+    setSelectedAnswer(target.innerText);
+  };
 
-const submitGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLInputElement>> = (e): void => {
-if (correctAnswer === selectedAnswer) {
-  alert(`Correct!
-${event1.name} was on ${event1.date.toLocaleDateString()}  
-${event2.name} was on ${event2.date.toLocaleDateString()}`);
-}
-else {
-    alert(`Incorrect!
-${event1.name} was on ${event1.date.toLocaleDateString()}  
-${event2.name} was on ${event2.date.toLocaleDateString()}`);
-}
-event1ref.current?.classList.remove(style.guessed);
-event2ref.current?.classList.remove(style.guessed);
-setSelectedAnswer("");
-setCorrectAnswer("");
-setDirty(true);
-}
+  const submitGuess: h.JSX.EventHandler<
+    h.JSX.TargetedMouseEvent<HTMLInputElement>
+  > = (): void => {
+    setSubmitted(true);
+  };
+  const nextGuess: h.JSX.EventHandler<
+    h.JSX.TargetedMouseEvent<HTMLInputElement>
+  > = (): void => {
+    event1ref.current?.classList.remove(style.guessed);
+    event2ref.current?.classList.remove(style.guessed);
+    setSelectedAnswer("");
+    setCorrectAnswer("");
+    setSubmitted(false);
+    setDirty(true);
+  };
 
   return (
-    <div>
+    <div style={{ marginTop: "60px" }}>
       <h1>Compare</h1>
-      <div ref={event1ref} id="event1" onClick={makeGuess}>{event1.name}</div>
-      <div id="vs">vs.</div>
-      <div ref={event2ref} id="event2" onClick={makeGuess}>{event2.name}</div>
-      <input type="button" value="Submit" onClick={submitGuess} />
+      <div className={style.comparisons}>
+        <div className={style.event1}>
+          <h2 onClick={makeGuess} ref={event1ref}>
+            {event1.name}
+          </h2>
+          <div hidden={!submitted}>{event1.date.toLocaleDateString()}</div>
+        </div>
+        <div id="vs">vs.</div>
+        <div className={style.event2}>
+          <h2 ref={event2ref} onClick={makeGuess}>
+            {" "}
+            {event2.name}
+          </h2>
+          <div hidden={!submitted}>{event2.date.toLocaleDateString()}</div>
+        </div>
+      </div>
+      <div id="results">
+        {submitted &&
+          (correctAnswer === selectedAnswer ? (
+            <h3 className={style.correct}>Correct!</h3>
+          ) : (
+            <h3 className={style.incorrect}>Incorrect!</h3>
+          ))}
+        <input
+          type="button"
+          value="Submit"
+          hidden={submitted}
+          onClick={submitGuess}
+        />
+        <input
+          type="button"
+          value="Next"
+          hidden={!submitted}
+          onClick={nextGuess}
+        />
+        <br />
+        Score: {score}
+      </div>
     </div>
   );
 };
