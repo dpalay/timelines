@@ -67,6 +67,7 @@ const Compare: FunctionalComponent<Props> = (props) => {
     h.JSX.TargetedMouseEvent<HTMLInputElement>
   > = (): void => {
     setSubmitted(true);
+    setScore((previous) => correctAnswer === selectedAnswer ? previous+1 : previous)
   };
   const nextGuess: h.JSX.EventHandler<
     h.JSX.TargetedMouseEvent<HTMLInputElement>
@@ -82,6 +83,13 @@ const Compare: FunctionalComponent<Props> = (props) => {
   return (
     <div style={{ marginTop: "60px" }}>
       <h1>Compare</h1>
+      <div id="results">
+        {submitted &&
+          (correctAnswer === selectedAnswer ? (
+            <h3 className={style.correct}>Correct!</h3>
+          ) : (
+            <h3 className={style.incorrect}>Incorrect!</h3>
+          ))} </div>
       <div className={style.comparisons}>
         <div className={style.event1}>
           <h2 onClick={makeGuess} ref={event1ref}>
@@ -98,13 +106,8 @@ const Compare: FunctionalComponent<Props> = (props) => {
           <div hidden={!submitted}>{event2.date.toLocaleDateString()}</div>
         </div>
       </div>
-      <div id="results">
-        {submitted &&
-          (correctAnswer === selectedAnswer ? (
-            <h3 className={style.correct}>Correct!</h3>
-          ) : (
-            <h3 className={style.incorrect}>Incorrect!</h3>
-          ))}
+  
+          <div>
         <input
           type="button"
           value="Submit"
