@@ -1,15 +1,18 @@
 import { FunctionalComponent, h } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { useRecoilValue } from "recoil";
 import { data } from "../../assets/data";
 import { Difficulties, EventCategories, TimeEvent } from "../../Model";
+import { CategoriesState } from "../../Recoil/recoilState";
 import style from "./style.css";
 
 interface Props {
-  category: number;
   difficulty: Difficulties;
 }
 
 const Compare: FunctionalComponent<Props> = (props) => {
+
+    const categories = useRecoilValue(CategoriesState)
 
     const event1ref = useRef<HTMLDivElement | undefined>(null);
     const event2ref = useRef<HTMLDivElement | undefined>(null);
@@ -31,11 +34,11 @@ const Compare: FunctionalComponent<Props> = (props) => {
   useEffect(() => {
     setDirty(() => false);
     console.log(props);
-    const filteredList = data.filter((x) =>
-      x.categories.find((y) => y & props.category)
-    );
+    console.log(categories)
+    console.log()
+    const filteredList = data.filter(value =>  value.categories.filter(category => categories.includes(category)).length > 0);
     console.log(filteredList);
-    if (filteredList.length > 0) {
+    if (filteredList.length > 0) {  
       const e1 =
         filteredList[Math.floor(Math.random() * filteredList.length) | 0];
       const e2 =

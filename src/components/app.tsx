@@ -7,7 +7,7 @@ import Profile from '../routes/profile';
 import NotFoundPage from '../routes/notfound';
 import Header from './header';
 import Compare from '../routes/compare';
-import { Difficulties, EventCategories } from '../Model';
+import { Difficulties } from '../Model';
 
 const App: FunctionalComponent = () => {
     return (
@@ -18,7 +18,7 @@ const App: FunctionalComponent = () => {
                 <Route path="/" component={Home} />
                 <Route path="/profile/" component={Profile} user="me" />
                 <Route path="/profile/:user" component={Profile} />
-                <Route path="/compare/" component={Compare} category={EventCategories.VideoGames + EventCategories.Movies} difficulty={Difficulties.Easy} />
+                <Route path="/compare/" component={Compare} difficulty={Difficulties.Easy} />
 
                 <NotFoundPage default />
             </Router>
