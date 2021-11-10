@@ -1,9 +1,9 @@
 import { FunctionalComponent, h } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { data } from "../../assets/data";
 import { Difficulties, EventCategories, TimeEvent } from "../../Model";
-import { CategoriesState } from "../../Recoil/recoilState";
+import { CategoriesState, ScoreState } from "../../Recoil/recoilState";
 import style from "./style.css";
 
 interface Props {
@@ -13,9 +13,10 @@ interface Props {
 const Compare: FunctionalComponent<Props> = (props) => {
 
     const categories = useRecoilValue(CategoriesState)
+    const [score, setScore] = useRecoilState(ScoreState)
 
-    const event1ref = useRef<HTMLDivElement | undefined>(null);
-    const event2ref = useRef<HTMLDivElement | undefined>(null);
+    const event1ref = useRef<HTMLDivElement>(null);
+    const event2ref = useRef<HTMLDivElement>(null);
     const [dirty, setDirty] = useState(false);
  
   const [event1, setEvent1] = useState<TimeEvent>({
@@ -48,7 +49,7 @@ const Compare: FunctionalComponent<Props> = (props) => {
       setEvent2(e2);
         setCorrectAnswer(e1.date < e2.date ? e1.name : e2.name);
     }
-  }, [props, dirty]);
+  }, [props, dirty, categories]);
 
 
   const makeGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLDivElement>> = (event): void => {
@@ -59,7 +60,7 @@ const Compare: FunctionalComponent<Props> = (props) => {
     setSelectedAnswer(target.innerHTML);
 }
 
-const submitGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLInputElement>> = (event): void => {
+const submitGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLInputElement>> = (e): void => {
 if (correctAnswer === selectedAnswer) {
   alert(`Correct!
 ${event1.name} was on ${event1.date.toLocaleDateString()}  
