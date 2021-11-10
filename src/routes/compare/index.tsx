@@ -11,10 +11,7 @@ interface Props {
 
 const Compare: FunctionalComponent<Props> = (props) => {
 
-    const makeGuess = (event: MouseEvent) => {
-        console.log(event.target.innerHTML);
-    }
-
+ 
   const [event1, setEvent1] = useState<TimeEvent>({
     name: "",
     date: new Date(Date.now()),
@@ -26,6 +23,7 @@ const Compare: FunctionalComponent<Props> = (props) => {
     categories: [EventCategories.Art],
   });
   const [correctAnswer, setCorrectAnswer] = useState<string>("");
+  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   useEffect(() => {
     console.log(props);
     const filteredList = data.filter((x) =>
@@ -44,12 +42,28 @@ const Compare: FunctionalComponent<Props> = (props) => {
     }
   }, [props]);
 
+
+  const makeGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLDivElement>> = (event): void => {
+    const divs = document.getElementsByClassName(style.guessed)
+    divs.item(0)?.classList.remove(style.guessed);
+    divs.item(1)?.classList.remove(style.guessed);
+
+    const target = event.target as HTMLDivElement;
+    target.classList.add(style.guessed)
+    setSelectedAnswer(target.innerHTML);
+}
+
+const submitGuess: h.JSX.EventHandler<h.JSX.TargetedMouseEvent<HTMLInputElement>> = (event): void => {
+
+}
+
   return (
     <div>
       <h1>Compare</h1>
       <div id="event1" onClick={makeGuess}>{event1.name}</div>
       <div id="vs">vs.</div>
       <div id="event2" onClick={makeGuess}>{event2.name}</div>
+      <input type="button" value="Submit" onClick={submitGuess} />
     </div>
   );
 };
