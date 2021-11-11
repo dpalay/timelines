@@ -81,7 +81,7 @@ const Compare: FunctionalComponent<Props> = (props) => {
 
   return (
     <div style={{ marginTop: "60px" }}>
-      <h1>Compare {submitted &&
+      <h1>Compare - Which came first? {submitted &&
           (correctAnswer === selectedAnswer ? (
             <span className={style.correct}>Correct!</span>
           ) : (
