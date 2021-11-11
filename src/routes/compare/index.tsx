@@ -44,7 +44,6 @@ const Compare: FunctionalComponent<Props> = (props) => {
         filteredList[Math.floor(Math.random() * filteredList.length) | 0];
       const e2 =
         filteredList[Math.floor(Math.random() * filteredList.length) | 0];
-      console.log(e1, e2, e1.date < e2.date ? e1.name : e2.name);
       setEvent1(e1);
       setEvent2(e2);
       setCorrectAnswer(e1.date < e2.date ? e1.name : e2.name);
@@ -82,14 +81,12 @@ const Compare: FunctionalComponent<Props> = (props) => {
 
   return (
     <div style={{ marginTop: "60px" }}>
-      <h1>Compare</h1>
-      <div id="results">
-        {submitted &&
+      <h1>Compare {submitted &&
           (correctAnswer === selectedAnswer ? (
-            <h3 className={style.correct}>Correct!</h3>
+            <span className={style.correct}>Correct!</span>
           ) : (
-            <h3 className={style.incorrect}>Incorrect!</h3>
-          ))} </div>
+            <span className={style.incorrect}>Incorrect!</span>
+          ))} </h1>
       <div className={style.comparisons}>
         <div className={style.event1}>
           <h2 onClick={makeGuess} ref={event1ref}>
@@ -107,7 +104,7 @@ const Compare: FunctionalComponent<Props> = (props) => {
         </div>
       </div>
   
-          <div>
+    <div className={style.scoreArea}>
         <input
           type="button"
           value="Submit"

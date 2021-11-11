@@ -27,3 +27,11 @@ margin-left: 20px;
    align-items: center;
 
 }
+
+.scoreArea {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
